@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aerotropolis LOI Bazaar | Sri Ambe Realtors</title>
+    
+    <!-- Google Fonts: Montserrat for headings, Inter for body -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            /* Aviation / Modern Theme Palette */
+            --bg-dark: #090e17;
+            --bg-slate: #111827;
+            --card-glass: rgba(17, 24, 39, 0.7);
+            --border-glass: rgba(6, 182, 212, 0.2);
+            --primary-cyan: #06b6d4;
+            --primary-teal: #14b8a6;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ambient-bg {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 0;
+            background: radial-gradient(circle at 50% 0%, rgba(6, 182, 212, 0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 100% 100%, rgba(20, 184, 166, 0.1) 0%, transparent 50%);
+        }
+
+        .grid-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 30px 30px;
+            z-index: 1;
+            opacity: 0.5;
+            perspective: 500px;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 480px;
+            padding: 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .wizard-card {
+            background: var(--card-glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-glass);
+            border-radius: 24px;
+            padding: 40px 30px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5),
+                        0 0 30px rgba(6, 182, 212, 0.05);
+            min-height: 500px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header Styles */
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 5px;
+        }
+
+        .logo-title span {
+            background: linear-gradient(135deg, var(--primary-cyan), var(--primary-teal));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+
+        .progress-track {
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            margin-bottom: 35px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 20%;
+            background: linear-gradient(90deg, var(--primary-cyan), var(--primary-teal));
+            transition: width 0.4s ease;
+            box-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
+        }
+
+        .step {
+            display: none;
+            flex: 1;
+            animation: fadeSlideUp 0.4s ease forwards;
+        }
+
+        .step.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .step-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.4rem;
+            text-align: center;
+            margin-bottom: 25px;
+            font-weight: 700;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-card {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 25px 15px;
+            cursor: pointer;
+            text-align: center;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .option-card i {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            color: var(--text-muted);
+            transition: var(--transition);
+        }
+
+        .option-card span {
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .option-row {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 18px 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: var(--transition);
+        }
+
+        /* Interactions */
+        .option-card:hover, .option-row:hover {
+            border-color: rgba(6, 182, 212, 0.4);
+            transform: translateY(-2px);
+            background: rgba(255,255,255,0.03);
+        }
+
+        .option-card.selected, .option-row.selected {
+            background: rgba(6, 182, 212, 0.1);
+            border-color: var(--primary-cyan);
+            box-shadow: 0 0 20px rgba(6, 182, 212, 0.15);
+        }
+
+        .option-card.selected i {
+            color: var(--primary-cyan);
+            transform: scale(1.1);
+        }
+
+        .option-card.selected span, .option-row.selected span {
+            color: #fff;
+            font-weight: 600;
+        }
+        
+        .check-icon {
+            color: var(--text-muted);
+            transition: var(--transition);
+        }
+        .option-row.selected .check-icon {
+            color: var(--primary-cyan);
+        }
+
+        .summary-box {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-left: 4px solid var(--primary-cyan);
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px dashed rgba(255,255,255,0.1);
+        }
+        .summary-item:last-child { border-bottom: none; }
+        .summary-label { color: var(--text-muted); font-size: 0.9rem; }
+        .summary-value { font-weight: 600; color: #fff; }
+
+        .btn-whatsapp {
+            background: linear-gradient(135deg, #10b981, #059669); /* Distinct green for WhatsApp */
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 50px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            width: 100%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: var(--transition);
+            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.2);
+        }
+
+        .btn-whatsapp:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 25px rgba(16, 185, 129, 0.3);
+        }
+
+        .nav-controls {
+            margin-top: auto;
+            padding-top: 20px;
+            display: flex;
+            justify-content: flex-start;
+        }
+
+        .btn-back {
+            background: transparent;
+            border: 1px solid var(--text-muted);
+            color: var(--text-muted);
+            padding: 10px 24px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+        }
+
+        .btn-back:hover {
+            border-color: var(--text-main);
+            color: var(--text-main);
+            background: rgba(255,255,255,0.05);
+        }
+
+        .success-screen {
+            display: none;
+            text-align: center;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            flex-direction: column;
+        }
+        
+        .success-icon {
+            font-size: 4rem;
+            color: var(--primary-cyan);
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px rgba(6, 182, 212, 0.4);
+        }
+
+        @keyframes fadeSlideUp {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="ambient-bg"></div>
+    <div class="grid-overlay"></div>
+
+    <main class="app-container">
+        <div class="wizard-card">
+            
+            <header class="header">
+                <h1 class="logo-title">Aerotropolis <span>Bazaar</span></h1>
+                <p class="subtitle">by Sri Ambe Realtors</p>
+            </header>
+
+            <div class="progress-track" id="progressTrack">
+                <div class="progress-fill" id="progressBar"></div>
+            </div>
+
+            <!-- Step 1: Intent -->
+            <div class="step active" id="step1">
+                <h2 class="step-title">What is your objective?</h2>
+                <div class="options-grid">
+                    <div class="option-card" onclick="selectOption('intent', 'Buy', this)">
+                        <i class="fa-solid fa-plane-arrival"></i>
+                        <span>Buy LOI</span>
+                    </div>
+                    <div class="option-card" onclick="selectOption('intent', 'Sell', this)">
+                        <i class="fa-solid fa-plane-departure"></i>
+                        <span>Sell LOI</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2: Block -->
+            <div class="step" id="step2">
+                <h2 class="step-title">Select Block</h2>
+                <div class="options-list">
+                    <div class="option-row" onclick="selectOption('block', 'Block A-D', this)">
+                        <span>Block A - D</span>
+                        <i class="fa-solid fa-circle-check check-icon"></i>
+                    </div>
+                    <div class="option-row" onclick="selectOption('block', 'Block E to J', this)">
+                        <span>Block E to J</span>
+                        <i class="fa-solid fa-circle-check check-icon"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3: Type -->
+            <div class="step" id="step3">
+                <h2 class="step-title">Property Type</h2>
+                <div class="options-grid">
+                    <div class="option-card" onclick="selectOption('type', 'Residential', this)">
+                        <i class="fa-solid fa-building-user"></i>
+                        <span>Residential</span>
+                    </div>
+                    <div class="option-card" onclick="selectOption('type', 'Commercial', this)">
+                        <i class="fa-solid fa-building-columns"></i>
+                        <span>Commercial</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 4: Size (Dynamic) -->
+            <div class="step" id="step4">
+                <h2 class="step-title">Select Dimension</h2>
+                <div class="options-list" id="sizeContainer">
+                    <!-- Injected via JS -->
+                </div>
+            </div>
+
+            <!-- Step 5: Summary -->
+            <div class="step" id="step5">
+                <h2 class="step-title">Review Request</h2>
+                <div class="summary-box">
+                    <div class="summary-item">
+                        <span class="summary-label">Action</span>
+                        <span class="summary-value" id="sumIntent">...</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Location</span>
+                        <span class="summary-value">Aerotropolis (<span id="sumBlock">...</span>)</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Type</span>
+                        <span class="summary-value" id="sumType">...</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Dimension</span>
+                        <span class="summary-value" id="sumSize">...</span>
+                    </div>
+                </div>
+                <button class="btn-whatsapp" onclick="submitToWhatsApp()">
+                    <i class="fa-brands fa-whatsapp"></i> Connect on WhatsApp
+                </button>
+            </div>
+
+            <!-- Success State -->
+            <div class="step success-screen" id="step6">
+                <i class="fa-solid fa-paper-plane success-icon"></i>
+                <h2 class="step-title">Request Initiated</h2>
+                <p style="color: var(--text-muted); margin-bottom: 20px; font-size: 0.9rem;">Redirecting to WhatsApp...</p>
+                <button class="btn-back" onclick="location.reload()" style="margin:0 auto;">
+                    <i class="fa-solid fa-rotate-left"></i> Start Over
+                </button>
+            </div>
+
+            <!-- Navigation Controls -->
+            <div class="nav-controls" id="navControls">
+                <button class="btn-back" id="btnBack" onclick="goBack()" style="display: none;">
+                    <i class="fa-solid fa-arrow-left"></i> Back
+                </button>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        // Configuration
+        const PHONE_NUMBER = "919855071280";
+        const DELAY = 350; // Delay for smooth auto-advance
+
+        // App State
+        let state = {
+            step: 1,
+            intent: '',
+            block: '',
+            type: '',
+            size: ''
+        };
+
+        const totalSteps = 5;
+
+        // Core Interaction
+        function selectOption(key, value, element) {
+            state[key] = value;
+            
+            // Highlight selection visually
+            const parent = element.parentElement;
+            const siblings = parent.children;
+            for(let el of siblings) el.classList.remove('selected');
+            element.classList.add('selected');
+
+            // If we just selected Type (Step 3), generate the sizes for Step 4
+            if (key === 'type') {
+                generateSizes();
+            }
+
+            // Auto-advance
+            setTimeout(() => {
+                if(state.step < totalSteps) {
+                    state.step++;
+                    renderUI();
+                }
+            }, DELAY);
+        }
+
+        function generateSizes() {
+            const container = document.getElementById('sizeContainer');
+            container.innerHTML = ''; // clear
+            let sizes = [];
+
+            // Core Logic for Aerotropolis Dimensions
+            if (state.block === 'Block A-D') {
+                if (state.type === 'Residential') {
+                    sizes = ['100 Gaj', '150 Gaj', '200 Gaj', '300 Gaj', '500 Gaj'];
+                } else if (state.type === 'Commercial') {
+                    sizes = ['25 Gaj Booth', '60 Gaj Bay Shop', '100 Gaj Showroom', '200 Gaj Showroom'];
+                }
+            } 
+            else if (state.block === 'Block E to J') {
+                if (state.type === 'Residential') {
+                    sizes = ['200 Gaj', '300 Gaj', '500 Gaj'];
+                } else if (state.type === 'Commercial') {
+                    sizes = ['100 Gaj Showroom', '200 Gaj Showroom'];
+                }
+            }
+
+            // Render Size Options
+            sizes.forEach(size => {
+                const div = document.createElement('div');
+                div.className = 'option-row';
+                div.innerHTML = `
+                    <span>${size}</span>
+                    <i class="fa-solid fa-circle-check check-icon"></i>
+                `;
+                div.onclick = function() { selectOption('size', size, this); };
+                container.appendChild(div);
+            });
+        }
+
+        function renderUI() {
+            // Hide all steps
+            document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
+            
+            // Show current step
+            const currentStepEl = document.getElementById(`step${state.step}`);
+            if(currentStepEl) currentStepEl.classList.add('active');
+
+            // Update Progress Bar
+            const progressPct = ((state.step - 1) / (totalSteps - 1)) * 100;
+            document.getElementById('progressBar').style.width = `${progressPct}%`;
+
+            // Update Back Button Visibility
+            const backBtn = document.getElementById('btnBack');
+            if (state.step === 1 || state.step > totalSteps) {
+                backBtn.style.display = 'none';
+            } else {
+                backBtn.style.display = 'flex';
+            }
+
+            // If on final step, populate summary data
+            if (state.step === 5) {
+                document.getElementById('sumIntent').textContent = state.intent;
+                document.getElementById('sumBlock').textContent = state.block;
+                document.getElementById('sumType').textContent = state.type;
+                document.getElementById('sumSize').textContent = state.size;
+            }
+        }
+
+        function goBack() {
+            if(state.step > 1) {
+                state.step--;
+                renderUI();
+            }
+        }
+
+        function submitToWhatsApp() {
+            // Compile Message
+            const text = `Hello Aerotropolis LOI Bazaar,\n\nI am looking to *${state.intent.toUpperCase()}* an LOI in Aerotropolis.\n\n📍 Block: ${state.block}\n🏢 Type: ${state.type}\n📏 Size: ${state.size}\n\nPlease contact me.`;
+            
+            // Encode for URL
+            const encodedText = encodeURIComponent(text);
+            const waUrl = `https://wa.me/${PHONE_NUMBER}?text=${encodedText}`;
+
+            // Open WhatsApp in new tab
+            window.open(waUrl, '_blank');
+
+            // Show success screen and hide nav
+            state.step = 6; 
+            document.getElementById('navControls').style.display = 'none';
+            document.getElementById('progressTrack').style.display = 'none';
+            renderUI();
+        }
+
+        // Initialize UI
+        renderUI();
+    </script>
+</body>
+</html>
