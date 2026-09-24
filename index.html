@@ -412,6 +412,26 @@
     color: #64748b;
     animation: fadeIn 0.4s ease forwards;
 }
+        body {
+    font-family: 'Lato', sans-serif;
+    /* Use your new aviation deep slate color if you changed it, otherwise keep var(--primary) */
+    background-color: #0f172a; 
+    color: #f8fafc;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* CRITICAL FIX: Allows vertical scrolling */
+    padding: 40px 0; /* Adds breathing room at the top and bottom */
+    overflow-x: hidden;
+    position: relative;
+}
+
+.app-container {
+    width: 100%;
+    max-width: 500px;
+    padding: 20px;
+    margin: 0 auto; /* Keeps the app centered horizontally */
+}
 
 /* Mobile Tweaks */
 @media (max-width: 400px) {
